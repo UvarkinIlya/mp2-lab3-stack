@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 
 template<class T>
@@ -8,18 +7,18 @@ class TStack{
     T* stack;
     int lastIndex;
 public:
-    Stack(int _capacity = 10){
+    TStack(int _capacity = 10){
         //Написать исключение при отрицат
         capacity = _capacity;
         stack = new T[capacity];
         lastIndex = -1;
     }
 
-    ~Stack(){
+    ~TStack(){
         delete[] stack;
     }
 
-    Stack(const TStack<T>* bf){
+    TStack(const TStack<T>* bf){
         capacity = bf->capacity;
         stack = new T[capacity];
         for(int i = 0; i < capacity; i++){
@@ -40,7 +39,7 @@ public:
     }
 
     void push(const T& elem){
-        if(lastIndex < capacity - 1){
+        if(lastIndex + 1 > capacity){
             throw lastIndex;
         }
         stack[++lastIndex] = elem;
@@ -51,11 +50,11 @@ public:
             throw lastIndex;
         }
 
-        return Stack[lastIndex--];
+        return stack[lastIndex--];
     }
 
     T& top(){
-        return *Stack[lastIndex];
+        return stack[lastIndex];
     }
 
 };

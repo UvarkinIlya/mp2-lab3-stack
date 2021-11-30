@@ -1,19 +1,22 @@
 #include "TCalculator.h"
 #include <string>
 
-
 using namespace std;
 
-double TCalculator::calcPostfix(){
-	for(int i = 0; i < postfix.size(); i++){
-		if(postfix[i] <= '9' && postfix[i] >= '1'){
-			stack_int.push(stod(&postfix[i]));
+TCalculator::TCalculator(string _expr){
+	expr = _expr;
+}
+
+void TCalculator::calcPostfix(){
+	for(int i = 0; i < expr.size(); i++){
+		if(expr[i] <= '9' && expr[i] >= '0'){
+			stack_int.push(stod(&expr[i]));
 		}
 
-		if(postfix[i] == '+' || postfix[i] == '-'){
+		if(isOperator(expr[i])){
 			double a = stack_int.pop();
 			double b = stack_int.pop();
-			switch(postfix[i]){
+			switch(expr[i]){
 			case '+':
 				stack_int.push(a + b);
 				break;
@@ -21,13 +24,11 @@ double TCalculator::calcPostfix(){
 				stack_int.push(b - a);
 				break;
 			default:
-				throw 0;
+				throw "operation is not supported!!!";
 				break;
 			}
 		}
 	}
-
-	return stack_int.pop();
 }
 
 string TCalculator::convert(string input){
@@ -54,7 +55,7 @@ string TCalculator::convert(string input){
 			stack_char.pop();
 		}
 
-		if(isOpertor(input[i])){
+		if(isOperator(input[i])){
 			while(Priority(stack_char.top()) <= Priority(input[i])){
 				output += stack_char.pop() + ' ';
 			}
@@ -66,15 +67,33 @@ string TCalculator::convert(string input){
 	return output;
 }
 
-string addBrackets(string input){
+string TCalculator::addBrackets(string input){
 	return '(' + input + ')';
 }
 
-bool isOperator(char){
-	return	true;
+int TCalculator::Priority(char op){
+	switch(op){
+	case '/':
+	case '*':
+		return 3;
+	case '-':
+	case '+':
+		return 2;
+	case '(':
+		return 1;
+	default:
+		throw "operation is not supported!!!";
+		break;
+	}
 }
 
+bool TCalculator::isOperator(char op){
+	return op == '+' || op == '-' || op == '/' || op == '*';
+}
 
+bool TCalculator::isFunction(string func){
+	return func == "cos";
+}
 
 double TCalculator::calc(){
 	string input = addBrackets(expr);
@@ -103,8 +122,14 @@ double TCalculator::calc(){
 				case '-':
 					stack_int.push(b - a);
 					break;
+				case '*':
+					stack_int.push(b * a);
+					break;
+				case '/':
+					stack_int.push(b / a);
+					break;
 				default:
-					throw 0;
+					throw "operation is not supported!!!";
 					break;
 				}
 			}
@@ -122,8 +147,14 @@ double TCalculator::calc(){
 				case '-':
 					stack_int.push(b - a);
 					break;
+				case '*':
+					stack_int.push(b * a);
+					break;
+				case '/':
+					stack_int.push(b / a);
+					break;
 				default:
-					throw 0;
+					throw "operation is not supported!!!";
 					break;
 				}
 			}

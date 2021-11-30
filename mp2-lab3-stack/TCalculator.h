@@ -12,8 +12,13 @@ class TCalculator{
 	TStack<double> stack_int;
 
 	int Priority(char op);//Определяем приорите операции
+	bool isOperator(char);
+	bool isFunction(string);
+	string addBrackets(string input);
+
 public:
-	double calcPostfix();
+	TCalculator(string _expr);
+	void calcPostfix();
 	string convert(string input);
 	double calc();
 private:
