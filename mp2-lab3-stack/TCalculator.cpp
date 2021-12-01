@@ -13,7 +13,7 @@ void TCalculator::calcPostfix(){
 			stack_int.push(stod(&expr[i]));
 		}
 
-		if(isOperator(expr[i])){
+		if(isOperator(string(1, expr[i]))){
 			double a = stack_int.pop();
 			double b = stack_int.pop();
 			switch(expr[i]){
@@ -44,23 +44,23 @@ string TCalculator::convert(string input){
 		}
 
 		if(input[i] == '('){
-			stack_char.push('(');
+			stack_char.push("(");
 		}
 
 		if(input[i] == ')'){
-			while(stack_char.top() != '('){
+			while(stack_char.top() != "("){
 				output += stack_char.pop() + ' ';
 			}
 
 			stack_char.pop();
 		}
 
-		if(isOperator(input[i])){
-			while(Priority(stack_char.top()) <= Priority(input[i])){
+		if(isOperator(string(1, input[i]))){
+			while(Priority(stack_char.top()) <= Priority(string(1, input[i]))){
 				output += stack_char.pop() + ' ';
 			}
 
-			stack_char.push(input[i]);
+			stack_char.push(string(1, input[i]));
 		}
 	}
 
@@ -71,8 +71,20 @@ string TCalculator::addBrackets(string input){
 	return '(' + input + ')';
 }
 
-int TCalculator::Priority(char op){
-	switch(op){
+int TCalculator::Priority(string op){
+	if(op == "cos" || op == "sin" || op == "tg" || op == "ctg"){
+		return 4;
+	} else if(op == "*" || op == "/"){
+		return 3;
+	} else if(op == "+" || op == "-"){
+		return 2;
+	} else if(op == "("){
+		return 1;
+	} else{
+		throw "operation is not supported!!!";
+	}
+
+	/*switch(op){
 	case '/':
 	case '*':
 		return 3;
@@ -84,15 +96,33 @@ int TCalculator::Priority(char op){
 	default:
 		throw "operation is not supported!!!";
 		break;
+	}*/
+}
+
+bool TCalculator::isOperator(string op){
+	return op == "+" || op == "-" || op == "/" || op == "*";
+}
+
+bool TCalculator::isFunction(string input, int start){
+	string func = "";
+	int i = start;
+
+	while (input[i] != '(' && (input[i] >= 'a' && input[i] <= 'z')){
+		func += input[i++];
 	}
+
+	return func == "cos" || func == "sin" || func == "tg" || func =="ctg";
 }
 
-bool TCalculator::isOperator(char op){
-	return op == '+' || op == '-' || op == '/' || op == '*';
-}
+string TCalculator::getFunction(string input, int start){
+	string func = "";
+	int i = start;
 
-bool TCalculator::isFunction(string func){
-	return func == "cos";
+	while(input[i] != '('){
+		func += input[i++];
+	}
+
+	return func;
 }
 
 double TCalculator::calc(){
@@ -105,21 +135,53 @@ double TCalculator::calc(){
 			double num = stod(&input[i], &ind);
 			stack_int.push(num);
 			i += ind - 1;
+			continue;
 		}
 
 		if(input[i] == '('){
-			stack_char.push('(');
+			stack_char.push("(");
+			continue;
 		}
 
 		if(input[i] == ')'){
-			while(stack_char.top() != '('){
+			while(stack_char.top() != "("){
 				double a = stack_int.pop();
+				if(stack_char.top() == "sin"){
+					stack_int.push(sin(a));
+					stack_char.pop();
+					continue;
+				} else if(stack_char.top() == "cos"){
+					stack_int.push(cos(a));
+					stack_char.pop();
+					continue;
+				} else if(stack_char.top() == "tg"){
+					stack_int.push(tan(a));
+					stack_char.pop();
+					continue;
+				} else if(stack_char.top() == "ctg"){
+					stack_int.push(1/tan(a));
+					stack_char.pop();
+					continue;
+				}
 				double b = stack_int.pop();
-				switch(stack_char.pop()){
-				case '+':
+				if(stack_char.top() == "+"){
+					stack_int.push(a + b);
+				} else if(stack_char.top() == "-"){
+					stack_int.push(b - a);
+				} else if (stack_char.top() == "*"){
+					stack_int.push(b * a);
+				} else if(stack_char.top() == "/"){
+					stack_int.push(b / a);
+				} else{
+					throw "operation is not supported!!!";
+				}
+				stack_char.pop();
+
+				/*switch(stack_char.pop()){
+				case "+":
 					stack_int.push(a + b);
 					break;
-				case '-':
+				case "-":
 					stack_int.push(b - a);
 					break;
 				case '*':
@@ -131,35 +193,58 @@ double TCalculator::calc(){
 				default:
 					throw "operation is not supported!!!";
 					break;
-				}
+				}*/
 			}
 			stack_char.pop();
+			continue;
 		}
 
-		if(isOperator(input[i])){
-			while(Priority(stack_char.top()) >= Priority(input[i])){
+		if(isOperator(string(1, input[i]))){
+			string opr(1, input[i]);
+
+			while(Priority(stack_char.top()) >= Priority(opr)){
 				double a = stack_int.pop();
+				if(stack_char.top() == "sin"){
+					stack_int.push(sin(a));
+					stack_char.pop();
+					continue;
+				} else if(stack_char.top() == "cos"){
+					stack_int.push(cos(a));
+					stack_char.pop();
+					continue;
+				} else if(stack_char.top() == "tan"){
+					stack_int.push(tan(a));
+					stack_char.pop();
+					continue;
+				} else if(stack_char.top() == "ctg"){
+					stack_int.push(1 / tan(a));
+					stack_char.pop();
+					continue;
+				}
 				double b = stack_int.pop();
-				switch(stack_char.pop()){
-				case '+':
+				if(stack_char.pop() == "+"){
 					stack_int.push(a + b);
-					break;
-				case '-':
+				} else if(stack_char.pop() == "-"){
 					stack_int.push(b - a);
-					break;
-				case '*':
+				} else if(stack_char.pop() == "*"){
 					stack_int.push(b * a);
-					break;
-				case '/':
+				} else if(stack_char.pop() == "/"){
 					stack_int.push(b / a);
-					break;
-				default:
+				} else{
 					throw "operation is not supported!!!";
-					break;
 				}
 			}
 
-			stack_char.push(input[i]);
+			stack_char.push(opr);
+			continue;
+		}
+
+		if(isFunction(input, i)){
+			string func = getFunction(input, i);
+			stack_char.push(func);
+			i += func.size();
+			stack_char.push("(");
+			continue;
 		}
 	}
 

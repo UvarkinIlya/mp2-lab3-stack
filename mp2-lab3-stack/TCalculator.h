@@ -8,12 +8,13 @@ using namespace std;
 class TCalculator{
 	string expr;
 	string postfix;
-	TStack<char> stack_char;
+	TStack<string> stack_char;
 	TStack<double> stack_int;
 
-	int Priority(char op);//Определяем приорите операции
-	bool isOperator(char);
-	bool isFunction(string);
+	int Priority(string op);//Определяем приорите операции
+	bool isOperator(string);
+	bool isFunction(string, int);
+	string getFunction(string input, int start);
 	string addBrackets(string input);
 
 public:
