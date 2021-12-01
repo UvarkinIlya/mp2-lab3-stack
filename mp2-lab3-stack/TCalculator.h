@@ -21,7 +21,7 @@ public:
 	TCalculator(string _expr);
 	void calcPostfix();
 	string convert(string input);
-	double calc();
+	double calc(int x = 0);
 private:
 	
 };

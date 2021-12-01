@@ -125,11 +125,16 @@ string TCalculator::getFunction(string input, int start){
 	return func;
 }
 
-double TCalculator::calc(){
+double TCalculator::calc(int x){
 	string input = addBrackets(expr);
 	//clear stack
 
 	for(int i = 0; i < input.size(); i++){
+		if(input[i] >= 'x'){
+			stack_int.push(x);
+			continue;
+		}
+
 		if(input[i] >= '0' && input[i] <= '9'){
 			size_t ind;
 			double num = stod(&input[i], &ind);
@@ -222,17 +227,18 @@ double TCalculator::calc(){
 					continue;
 				}
 				double b = stack_int.pop();
-				if(stack_char.pop() == "+"){
+				if(stack_char.top() == "+"){
 					stack_int.push(a + b);
-				} else if(stack_char.pop() == "-"){
+				} else if(stack_char.top() == "-"){
 					stack_int.push(b - a);
-				} else if(stack_char.pop() == "*"){
+				} else if(stack_char.top() == "*"){
 					stack_int.push(b * a);
-				} else if(stack_char.pop() == "/"){
+				} else if(stack_char.top() == "/"){
 					stack_int.push(b / a);
 				} else{
 					throw "operation is not supported!!!";
 				}
+				stack_char.pop();
 			}
 
 			stack_char.push(opr);
