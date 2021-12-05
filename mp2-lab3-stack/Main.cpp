@@ -1,9 +1,9 @@
 #include "TCalculator.h"
 
 void main(){
-	TCalculator calc("tg(sin(5)/cos(5))");
-	double res = calc.calc();
-	double x = tan(sin(5) / cos(5));
+	TCalculator calc("8+2*x+cos(7*x)");
+	double res = calc.calc(5);
+	double x = 8 + 2 * 5 + cos(7 * 5);
 
 	cout << res << "   " << x;
 	

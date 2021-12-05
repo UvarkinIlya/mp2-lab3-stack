@@ -8,7 +8,9 @@ class TStack{
     int lastIndex;
 public:
     TStack(int _capacity = 10){
-        //Написать исключение при отрицат
+        if (_capacity <= 0){
+            throw "wrong size";
+        }
         capacity = _capacity;
         stack = new T[capacity];
         lastIndex = -1;
@@ -39,21 +41,24 @@ public:
     }
 
     void push(const T& elem){
-        if(lastIndex + 1 > capacity){
-            throw lastIndex;
+        if(lastIndex + 1 >= capacity){
+            throw "stack full";
         }
         stack[++lastIndex] = elem;
     }
 
     T pop(){
         if(lastIndex == -1){
-            throw lastIndex;
+            throw "stack empty";
         }
 
         return stack[lastIndex--];
     }
 
     T& top(){
+        if(lastIndex == -1){
+            throw "stack empty";
+        }
         return stack[lastIndex];
     }
 
