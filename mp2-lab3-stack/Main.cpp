@@ -1,11 +1,10 @@
 #include "TCalculator.h"
 
-void main(){
-	TCalculator calc("8+2*x+cos(7*x)");
-	double res = calc.calc(5);
-	double x = 8 + 2 * 5 + cos(7 * 5);
-
-	cout << res << "   " << x;
+int main(){
+	TCalculator calc("2+2");
+	double res = calc.calc();
+	double expected = 2.0 + 2.0;
 	
 	system("pause");
+	return 0;
 }

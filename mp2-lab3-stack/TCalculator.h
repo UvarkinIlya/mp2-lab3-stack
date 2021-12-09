@@ -3,26 +3,24 @@
 #include <string> 
 #include "TStack.h"
 
-using namespace std;
+//using namespace std;
 
 class TCalculator{
-	string expr;
-	string postfix;
-	TStack<string> stack_char;
+	std::string expr;
+	std::string postfix;
+	TStack<std::string> stack_char;
 	TStack<double> stack_int;
 
-	int Priority(string op);//Определяем приорите операции
-	bool isOperator(string);
-	bool isFunction(string, int);
-	string getFunction(string input, int start);
-	string addBrackets(string input);
+	int Priority(std::string op);//Определяем приорите операции
+	bool isOperator(std::string);
+	bool isFunction(std::string, int);
+	std::string getFunction(std::string input, int start);
+	std::string addBrackets(std::string input);
 
 public:
-	TCalculator(string _expr);
+	TCalculator(std::string _expr);
 	void calcPostfix();
-	string convert(string input);
+	std::string convert(std::string input);
 	double calc(int x = 0);
-private:
-	
 };
 

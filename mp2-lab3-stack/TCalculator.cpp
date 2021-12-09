@@ -1,19 +1,19 @@
 #include "TCalculator.h"
 #include <string>
 
-using namespace std;
+//using namespace std;
 
-TCalculator::TCalculator(string _expr){
+TCalculator::TCalculator(std::string _expr = ""){
 	expr = _expr;
 }
 
 void TCalculator::calcPostfix(){
-	for(int i = 0; i < expr.size(); i++){
+	for(unsigned int i = 0; i < expr.size(); i++){
 		if(expr[i] <= '9' && expr[i] >= '0'){
-			stack_int.push(stod(&expr[i]));
+			stack_int.push(std::stod(&expr[i]));
 		}
 
-		if(isOperator(string(1, expr[i]))){
+		if(isOperator(std::string(1, expr[i]))){
 			double a = stack_int.pop();
 			double b = stack_int.pop();
 			switch(expr[i]){
@@ -31,14 +31,14 @@ void TCalculator::calcPostfix(){
 	}
 }
 
-string TCalculator::convert(string input){
-	string output = "";
+std::string TCalculator::convert(std::string input){
+	std::string output = "";
 
 	input = addBrackets(input);
 
 	stack_char.cleaning();
 
-	for(int i = 0; i < input.size(); i++){
+	for(unsigned int i = 0; i < input.size(); i++){
 		if(input[i] <= '9' && postfix[i] >= '1'){
 			output += input[i] + ' ';
 		}
@@ -55,23 +55,23 @@ string TCalculator::convert(string input){
 			stack_char.pop();
 		}
 
-		if(isOperator(string(1, input[i]))){
-			while(Priority(stack_char.top()) <= Priority(string(1, input[i]))){
+		if(isOperator(std::string(1, input[i]))){
+			while(Priority(stack_char.top()) <= Priority(std::string(1, input[i]))){
 				output += stack_char.pop() + ' ';
 			}
 
-			stack_char.push(string(1, input[i]));
+			stack_char.push(std::string(1, input[i]));
 		}
 	}
 
 	return output;
 }
 
-string TCalculator::addBrackets(string input){
+std::string TCalculator::addBrackets(std::string input){
 	return '(' + input + ')';
 }
 
-int TCalculator::Priority(string op){
+int TCalculator::Priority(std::string op){
 	if(op == "cos" || op == "sin" || op == "tg" || op == "ctg"){
 		return 4;
 	} else if(op == "*" || op == "/"){
@@ -99,12 +99,12 @@ int TCalculator::Priority(string op){
 	}*/
 }
 
-bool TCalculator::isOperator(string op){
+bool TCalculator::isOperator(std::string op){
 	return op == "+" || op == "-" || op == "/" || op == "*";
 }
 
-bool TCalculator::isFunction(string input, int start){
-	string func = "";
+bool TCalculator::isFunction(std::string input, int start){
+	std::string func = "";
 	int i = start;
 
 	while (input[i] != '(' && (input[i] >= 'a' && input[i] <= 'z')){
@@ -114,8 +114,8 @@ bool TCalculator::isFunction(string input, int start){
 	return func == "cos" || func == "sin" || func == "tg" || func =="ctg";
 }
 
-string TCalculator::getFunction(string input, int start){
-	string func = "";
+std::string TCalculator::getFunction(std::string input, int start){
+	std::string func = "";
 	int i = start;
 
 	while(input[i] != '('){
@@ -126,10 +126,10 @@ string TCalculator::getFunction(string input, int start){
 }
 
 double TCalculator::calc(int x){
-	string input = addBrackets(expr);
+	std::string input = addBrackets(expr);
 	//clear stack
 
-	for(int i = 0; i < input.size(); i++){
+	for(unsigned int i = 0; i < input.size(); i++){
 		if(input[i] >= 'x'){
 			stack_int.push(x);
 			continue;
@@ -137,7 +137,7 @@ double TCalculator::calc(int x){
 
 		if(input[i] >= '0' && input[i] <= '9'){
 			size_t ind;
-			double num = stod(&input[i], &ind);
+			double num = std::stod(&input[i], &ind);
 			stack_int.push(num);
 			i += ind - 1;
 			continue;
@@ -176,6 +176,9 @@ double TCalculator::calc(int x){
 				} else if (stack_char.top() == "*"){
 					stack_int.push(b * a);
 				} else if(stack_char.top() == "/"){
+					if(a == 0.0){
+						throw "cannot be divided by zero!";
+					}
 					stack_int.push(b / a);
 				} else{
 					throw "operation is not supported!!!";
@@ -204,8 +207,8 @@ double TCalculator::calc(int x){
 			continue;
 		}
 
-		if(isOperator(string(1, input[i]))){
-			string opr(1, input[i]);
+		if(isOperator(std::string(1, input[i]))){
+			std::string opr(1, input[i]);
 
 			while(Priority(stack_char.top()) >= Priority(opr)){
 				double a = stack_int.pop();
@@ -234,6 +237,9 @@ double TCalculator::calc(int x){
 				} else if(stack_char.top() == "*"){
 					stack_int.push(b * a);
 				} else if(stack_char.top() == "/"){
+					if(a == 0.0){
+						throw "cannot be divided by zero!";
+					}
 					stack_int.push(b / a);
 				} else{
 					throw "operation is not supported!!!";
@@ -246,7 +252,7 @@ double TCalculator::calc(int x){
 		}
 
 		if(isFunction(input, i)){
-			string func = getFunction(input, i);
+			std::string func = getFunction(input, i);
 			stack_char.push(func);
 			i += func.size();
 			stack_char.push("(");
@@ -254,5 +260,10 @@ double TCalculator::calc(int x){
 		}
 	}
 
-	return stack_int.pop();
+	double ans = stack_int.pop();
+	if(!stack_int.empty()){
+		throw "error!!!";
+	}
+
+	return ans;
 }
